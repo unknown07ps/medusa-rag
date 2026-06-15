@@ -1,0 +1,48 @@
+# API
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+
+# LangChain
+langchain==0.2.3
+langchain-core==0.2.5
+langchain-community==0.2.3
+langchain-openai==0.1.8
+langchain-text-splitters==0.2.1
+
+# OpenAI
+openai==1.30.1
+
+# Vector stores
+faiss-cpu==1.8.0
+chromadb==0.5.0
+
+# Document loaders
+pypdf==4.2.0
+
+# Pydantic & settings
+pydantic==2.7.1
+pydantic-settings==2.2.1
+
+# Database
+sqlalchemy==2.0.30
+asyncpg==0.29.0
+alembic==1.13.1
+
+# Cache
+redis==5.0.4
+
+# Observability
+prometheus-client==0.20.0
+structlog==24.1.0
+
+# YAML
+pyyaml==6.0.1
+
+# LangSmith (optional tracing)
+langsmith==0.1.63
+
+# Dev / test
+pytest==8.2.1
+pytest-asyncio==0.23.7
+httpx==0.27.0

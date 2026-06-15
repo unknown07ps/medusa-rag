@@ -1,0 +1,170 @@
+{
+  "title": "Medusa RAG — Observability",
+  "uid": "medusa-rag-main",
+  "version": 1,
+  "schemaVersion": 38,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Request Rate (req/s)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(medusa_http_requests_total[1m])) by (endpoint)",
+          "legendFormat": "{{endpoint}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "P95 Request Latency (s)",
+      "type": "timeseries",
+      "gridPos": { "x": 8, "y": 0, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(medusa_http_request_duration_seconds_bucket[5m])) by (le, endpoint))",
+          "legendFormat": "p95 {{endpoint}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Error Rate (%)",
+      "type": "timeseries",
+      "gridPos": { "x": 16, "y": 0, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(medusa_http_requests_total{status_code=~\"5..\"}[1m])) / sum(rate(medusa_http_requests_total[1m])) * 100",
+          "legendFormat": "Error %"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "RAG Pipeline P95 Latency (s)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 6, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(medusa_rag_query_duration_seconds_bucket[5m])) by (le, prompt_version))",
+          "legendFormat": "p95 {{prompt_version}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Fallback Trigger Rate",
+      "type": "timeseries",
+      "gridPos": { "x": 8, "y": 6, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(medusa_fallback_triggered_total[5m])) by (fallback_level)",
+          "legendFormat": "{{fallback_level}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "LLM Token Usage (tokens/min)",
+      "type": "timeseries",
+      "gridPos": { "x": 16, "y": 6, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(medusa_llm_tokens_total[1m])) by (token_type)",
+          "legendFormat": "{{token_type}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Retrieval Score Distribution",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(medusa_retrieval_score_bucket[5m])) by (le))",
+          "legendFormat": "p50 score"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(medusa_retrieval_score_bucket[5m])) by (le))",
+          "legendFormat": "p95 score"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Cache Hit Rate (%)",
+      "type": "timeseries",
+      "gridPos": { "x": 8, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(medusa_cache_hits_total{result=\"hit\"}[1m])) / sum(rate(medusa_cache_hits_total[1m])) * 100",
+          "legendFormat": "Cache Hit %"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "LLM P95 Latency by Prompt Version (s)",
+      "type": "timeseries",
+      "gridPos": { "x": 16, "y": 12, "w": 8, "h": 6 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(medusa_llm_duration_seconds_bucket[5m])) by (le, prompt_version))",
+          "legendFormat": "p95 {{prompt_version}}"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "In-Progress Requests",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 18, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(medusa_http_requests_in_progress)",
+          "legendFormat": "In Progress"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Total Documents Ingested",
+      "type": "stat",
+      "gridPos": { "x": 6, "y": 18, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(medusa_documents_ingested_total{status=\"success\"})",
+          "legendFormat": "Documents"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Total Fallbacks (all time)",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 18, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(medusa_fallback_triggered_total)",
+          "legendFormat": "Fallbacks"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Active Prompt Version",
+      "type": "stat",
+      "gridPos": { "x": 18, "y": 18, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "medusa_active_prompt_version_info",
+          "legendFormat": "{{version}}"
+        }
+      ]
+    }
+  ]
+}
